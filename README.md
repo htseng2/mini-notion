@@ -1,5 +1,33 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Tech Stack
+
+### Frontend
+
+- Next.js
+- Tailwind CSS
+- Tiptap
+- React Query
+
+### Backend
+
+- Next.js API routes
+- Prisma
+- PostgreSQL
+
+### Authentication
+
+- NextAuth.js
+
+### Realtime Features
+
+- Yjs/Liveblocks
+
+### Hosting
+
+- Vercel
+- Supabase
+
 ## Getting Started
 
 First, run the development server:
