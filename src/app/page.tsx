@@ -54,7 +54,7 @@ export default async function Home() {
             <UserProfile name={user?.name} email={user?.email} />
           </div>
           <Link
-            href="#"
+            href="/documents/new"
             className="flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-3 text-white font-semibold shadow hover:bg-indigo-500 transition"
           >
             <PlusIcon className="h-5 w-5" /> New Document
