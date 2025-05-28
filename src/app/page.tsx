@@ -2,11 +2,8 @@ import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import { prisma } from "@/lib/prisma";
-import {
-  UserCircleIcon,
-  PlusIcon,
-  DocumentTextIcon,
-} from "@heroicons/react/24/solid";
+import { PlusIcon, DocumentTextIcon } from "@heroicons/react/24/solid";
+import UserProfile from "@/components/UserProfile";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -50,11 +47,11 @@ export default async function Home() {
     <main className="flex min-h-screen flex-col items-center bg-gradient-to-br from-indigo-100 via-white to-pink-100 p-8">
       <div className="w-full max-w-3xl mx-auto rounded-2xl bg-white shadow-2xl p-10">
         <div className="flex items-center justify-between mb-10">
-          <div className="flex items-center gap-3">
-            <UserCircleIcon className="h-10 w-10 text-indigo-400" />
+          <div className="flex flex-col gap-2">
             <h1 className="text-3xl font-extrabold text-indigo-700">
               Your Documents
             </h1>
+            <UserProfile name={user?.name} email={user?.email} />
           </div>
           <Link
             href="#"
