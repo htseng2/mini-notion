@@ -14,13 +14,14 @@ interface DocumentEditorProps {
 
 export default function DocumentEditor({ document }: DocumentEditorProps) {
   const [content, setContent] = useState(document.content || "");
+  const [title, setTitle] = useState(document.title);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Auto-save when content changes
+  // Auto-save when content or title changes
   useEffect(() => {
     const saveTimeout = setTimeout(async () => {
-      if (content === document.content) return;
+      if (content === document.content && title === document.title) return;
 
       setSaving(true);
       setError(null);
@@ -32,7 +33,7 @@ export default function DocumentEditor({ document }: DocumentEditorProps) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            title: document.title,
+            title,
             content,
           }),
         });
@@ -49,11 +50,18 @@ export default function DocumentEditor({ document }: DocumentEditorProps) {
     }, 1000); // Debounce for 1 second
 
     return () => clearTimeout(saveTimeout);
-  }, [content, document.id, document.title, document.content]);
+  }, [content, title, document.id, document.title, document.content]);
 
   return (
     <div className="space-y-4">
       <div className="relative">
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Untitled Document"
+          className="w-full text-3xl font-extrabold text-indigo-700 mb-4 bg-transparent border-none focus:ring-0 p-0"
+        />
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}

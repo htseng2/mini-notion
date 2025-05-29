@@ -48,10 +48,6 @@ export default async function DocumentPage({ params }: DocumentPageProps) {
           </Link>
         </div>
 
-        <h1 className="text-3xl font-extrabold text-indigo-700 mb-8">
-          {document.title}
-        </h1>
-
         <DocumentEditor document={document} />
       </div>
     </main>
