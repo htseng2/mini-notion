@@ -148,12 +148,18 @@ export default function DocumentEditor({
 
       if (!response.ok) {
         const data = await response.json();
+        if (response.status === 409) {
+          throw new Error("This user already has access to the document");
+        }
         throw new Error(data.message || "Something went wrong");
       }
 
+      // Clear the form
       setShareEmail("");
       setShareCanEdit(false);
-      loadShares(); // Reload shares after adding a new one
+
+      // Reload shares to get complete user data
+      await loadShares();
     } catch (err) {
       setShareError(
         err instanceof Error ? err.message : "Something went wrong"
@@ -175,7 +181,9 @@ export default function DocumentEditor({
         throw new Error("Failed to remove share");
       }
 
-      loadShares(); // Reload shares after removing one
+      setShares((currentShares) =>
+        currentShares.filter((share) => share.user.email !== email)
+      );
     } catch (err) {
       console.error("Error removing share:", err);
     }
@@ -195,9 +203,18 @@ export default function DocumentEditor({
         throw new Error("Failed to update share permissions");
       }
 
-      loadShares(); // Reload shares after updating
+      setShares((currentShares) =>
+        currentShares.map((share) =>
+          share.user.email === email ? { ...share, canEdit } : share
+        )
+      );
     } catch (err) {
       console.error("Error updating share:", err);
+      setShares((currentShares) =>
+        currentShares.map((share) =>
+          share.user.email === email ? { ...share, canEdit: !canEdit } : share
+        )
+      );
     }
   };
 
@@ -331,10 +348,10 @@ export default function DocumentEditor({
                     >
                       <div className="flex-1">
                         <div className="font-medium text-gray-900">
-                          {share.user.name}
+                          {share.user?.name || "Unknown User"}
                         </div>
                         <div className="text-sm text-gray-500">
-                          {share.user.email}
+                          {share.user?.email || "No email"}
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
@@ -345,7 +362,7 @@ export default function DocumentEditor({
                             checked={share.canEdit}
                             onChange={(e) =>
                               handleUpdateShare(
-                                share.user.email,
+                                share.user?.email || "",
                                 e.target.checked
                               )
                             }
@@ -359,7 +376,9 @@ export default function DocumentEditor({
                           </label>
                         </div>
                         <button
-                          onClick={() => handleRemoveShare(share.user.email)}
+                          onClick={() =>
+                            handleRemoveShare(share.user?.email || "")
+                          }
                           className="text-gray-400 hover:text-red-500 transition"
                           title="Remove access"
                         >

@@ -70,6 +70,11 @@ export async function PUT(
 
     const document = await prisma.document.findUnique({
       where: { id: params.id },
+      include: {
+        sharedWith: {
+          where: { userId: user.id },
+        },
+      },
     });
 
     if (!document) {
@@ -79,7 +84,13 @@ export async function PUT(
       );
     }
 
-    if (document.userId !== user.id) {
+    // Check if user is the owner or has edit permissions through a share
+    const isOwner = document.userId === user.id;
+    const hasEditPermission = document.sharedWith.some(
+      (share) => share.canEdit
+    );
+
+    if (!isOwner && !hasEditPermission) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
