@@ -153,3 +153,77 @@ export async function DELETE(
     );
   }
 }
+
+// PUT /api/documents/[id]/share - Update share permissions
+export async function PUT(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.email) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+    });
+
+    if (!user) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
+    const document = await prisma.document.findUnique({
+      where: { id: params.id },
+    });
+
+    if (!document) {
+      return NextResponse.json(
+        { message: "Document not found" },
+        { status: 404 }
+      );
+    }
+
+    if (document.userId !== user.id) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const { email, canEdit } = await req.json();
+
+    if (!email) {
+      return NextResponse.json(
+        { message: "Email is required" },
+        { status: 400 }
+      );
+    }
+
+    const shareWithUser = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!shareWithUser) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
+    const share = await prisma.documentShare.update({
+      where: {
+        documentId_userId: {
+          documentId: document.id,
+          userId: shareWithUser.id,
+        },
+      },
+      data: {
+        canEdit,
+      },
+    });
+
+    return NextResponse.json(share);
+  } catch (error) {
+    console.error("Error updating document share:", error);
+    return NextResponse.json(
+      { message: "Something went wrong" },
+      { status: 500 }
+    );
+  }
+}

@@ -2,12 +2,22 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { TrashIcon, ShareIcon } from "@heroicons/react/24/solid";
+import { TrashIcon, ShareIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
 interface Document {
   id: string;
   title: string;
   content: string | null;
+}
+
+interface Share {
+  id: string;
+  canEdit: boolean;
+  user: {
+    id: string;
+    email: string;
+    name: string | null;
+  };
 }
 
 interface DocumentEditorProps {
@@ -29,6 +39,31 @@ export default function DocumentEditor({
   const [shareEmail, setShareEmail] = useState("");
   const [shareCanEdit, setShareCanEdit] = useState(false);
   const [shareError, setShareError] = useState<string | null>(null);
+  const [shares, setShares] = useState<Share[]>([]);
+  const [isLoadingShares, setIsLoadingShares] = useState(false);
+
+  // Load existing shares
+  useEffect(() => {
+    if (showShareModal) {
+      loadShares();
+    }
+  }, [showShareModal]);
+
+  const loadShares = async () => {
+    setIsLoadingShares(true);
+    try {
+      const response = await fetch(`/api/documents/${document.id}/shares`);
+      if (!response.ok) {
+        throw new Error("Failed to load shares");
+      }
+      const data = await response.json();
+      setShares(data);
+    } catch (err) {
+      console.error("Error loading shares:", err);
+    } finally {
+      setIsLoadingShares(false);
+    }
+  };
 
   // Auto-save when content or title changes
   useEffect(() => {
@@ -116,13 +151,53 @@ export default function DocumentEditor({
         throw new Error(data.message || "Something went wrong");
       }
 
-      setShowShareModal(false);
       setShareEmail("");
       setShareCanEdit(false);
+      loadShares(); // Reload shares after adding a new one
     } catch (err) {
       setShareError(
         err instanceof Error ? err.message : "Something went wrong"
       );
+    }
+  };
+
+  const handleRemoveShare = async (email: string) => {
+    try {
+      const response = await fetch(`/api/documents/${document.id}/share`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to remove share");
+      }
+
+      loadShares(); // Reload shares after removing one
+    } catch (err) {
+      console.error("Error removing share:", err);
+    }
+  };
+
+  const handleUpdateShare = async (email: string, canEdit: boolean) => {
+    try {
+      const response = await fetch(`/api/documents/${document.id}/share`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, canEdit }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update share permissions");
+      }
+
+      loadShares(); // Reload shares after updating
+    } catch (err) {
+      console.error("Error updating share:", err);
     }
   };
 
@@ -179,10 +254,21 @@ export default function DocumentEditor({
       )}
 
       {showShareModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full">
-            <h2 className="text-xl font-semibold mb-4">Share Document</h2>
-            <form onSubmit={handleShare} className="space-y-4">
+        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white/95 backdrop-blur-sm rounded-lg p-6 max-w-md w-full shadow-2xl">
+            <div className="flex items-center justify-between mb-6 border-b border-gray-200 pb-3">
+              <h2 className="text-2xl font-bold text-indigo-700">
+                Share Document
+              </h2>
+              <button
+                onClick={() => setShowShareModal(false)}
+                className="text-gray-400 hover:text-gray-500"
+              >
+                <XMarkIcon className="h-6 w-6" />
+              </button>
+            </div>
+
+            <form onSubmit={handleShare} className="space-y-4 mb-6">
               <div>
                 <label
                   htmlFor="email"
@@ -220,14 +306,7 @@ export default function DocumentEditor({
                   <div className="text-sm text-red-700">{shareError}</div>
                 </div>
               )}
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowShareModal(false)}
-                  className="px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition"
-                >
-                  Cancel
-                </button>
+              <div className="flex justify-end">
                 <button
                   type="submit"
                   className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 transition"
@@ -236,6 +315,66 @@ export default function DocumentEditor({
                 </button>
               </div>
             </form>
+
+            {isLoadingShares ? (
+              <div className="text-center text-gray-500">Loading shares...</div>
+            ) : shares.length > 0 ? (
+              <div>
+                <h3 className="text-sm font-medium text-gray-700 mb-3">
+                  People with access
+                </h3>
+                <ul className="space-y-2">
+                  {shares.map((share) => (
+                    <li
+                      key={share.id}
+                      className="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-3"
+                    >
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-900">
+                          {share.user.name}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {share.user.email}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="checkbox"
+                            id={`edit-${share.id}`}
+                            checked={share.canEdit}
+                            onChange={(e) =>
+                              handleUpdateShare(
+                                share.user.email,
+                                e.target.checked
+                              )
+                            }
+                            className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                          />
+                          <label
+                            htmlFor={`edit-${share.id}`}
+                            className="text-sm text-gray-600"
+                          >
+                            Allow editing
+                          </label>
+                        </div>
+                        <button
+                          onClick={() => handleRemoveShare(share.user.email)}
+                          className="text-gray-400 hover:text-red-500 transition"
+                          title="Remove access"
+                        >
+                          <XMarkIcon className="h-5 w-5" />
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <div className="text-center text-gray-500">
+                No one has access to this document yet
+              </div>
+            )}
           </div>
         </div>
       )}
