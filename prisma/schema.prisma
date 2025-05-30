@@ -26,6 +26,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   documents     Document[]
+  sharedDocuments DocumentShare[]
 }
 
 model Account {
@@ -72,6 +73,22 @@ model Document {
   updatedAt DateTime @updatedAt
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sharedWith DocumentShare[]
 
+  @@index([userId])
+}
+
+model DocumentShare {
+  id         String   @id @default(cuid())
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  canEdit    Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([documentId, userId])
+  @@index([documentId])
   @@index([userId])
 }

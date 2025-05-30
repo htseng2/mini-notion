@@ -40,8 +40,25 @@ export default async function Home() {
   // Fetch user documents
   const user = await prisma.user.findUnique({
     where: { email: session.user.email },
-    include: { documents: true },
+    include: {
+      documents: true,
+      sharedDocuments: {
+        include: {
+          document: true,
+        },
+      },
+    },
   });
+
+  if (!user) {
+    return null;
+  }
+
+  const ownedDocuments = user.documents;
+  const sharedDocuments = user.sharedDocuments.map((share) => ({
+    ...share.document,
+    canEdit: share.canEdit,
+  }));
 
   return (
     <main className="flex min-h-screen flex-col items-center bg-gradient-to-br from-indigo-100 via-white to-pink-100 p-8">
@@ -57,30 +74,70 @@ export default async function Home() {
             >
               <PlusIcon className="h-5 w-5" /> New Document
             </Link>
-            <HamburgerMenu userName={user?.name} userEmail={user?.email} />
+            <HamburgerMenu userName={user.name} userEmail={user.email} />
           </div>
         </div>
-        {user?.documents?.length ? (
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {user.documents.map((doc) => (
-              <li
-                key={doc.id}
-                className="rounded-xl border bg-white p-6 shadow hover:shadow-lg transition flex flex-col justify-between min-h-[120px]"
-              >
-                <Link
-                  href={`/documents/${doc.id}`}
-                  className="text-xl font-semibold text-indigo-700 hover:underline flex items-center gap-2"
+
+        {ownedDocuments.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              My Documents
+            </h2>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {ownedDocuments.map((doc) => (
+                <li
+                  key={doc.id}
+                  className="rounded-xl border bg-white p-6 shadow hover:shadow-lg transition flex flex-col justify-between min-h-[120px]"
                 >
-                  <DocumentTextIcon className="h-6 w-6 text-indigo-400" />
-                  {doc.title}
-                </Link>
-                <div className="text-xs text-gray-500 mt-3">
-                  Last updated: {new Date(doc.updatedAt).toLocaleString()}
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
+                  <Link
+                    href={`/documents/${doc.id}`}
+                    className="text-xl font-semibold text-indigo-700 hover:underline flex items-center gap-2"
+                  >
+                    <DocumentTextIcon className="h-6 w-6 text-indigo-400" />
+                    {doc.title}
+                  </Link>
+                  <div className="text-xs text-gray-500 mt-3">
+                    Last updated: {new Date(doc.updatedAt).toLocaleString()}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {sharedDocuments.length > 0 && (
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              Shared with Me
+            </h2>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {sharedDocuments.map((doc) => (
+                <li
+                  key={doc.id}
+                  className="rounded-xl border bg-white p-6 shadow hover:shadow-lg transition flex flex-col justify-between min-h-[120px]"
+                >
+                  <Link
+                    href={`/documents/${doc.id}`}
+                    className="text-xl font-semibold text-indigo-700 hover:underline flex items-center gap-2"
+                  >
+                    <DocumentTextIcon className="h-6 w-6 text-indigo-400" />
+                    {doc.title}
+                  </Link>
+                  <div className="flex flex-col gap-1">
+                    <div className="text-xs text-gray-500">
+                      Last updated: {new Date(doc.updatedAt).toLocaleString()}
+                    </div>
+                    <div className="text-xs text-indigo-600">
+                      {doc.canEdit ? "Can edit" : "View only"}
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {ownedDocuments.length === 0 && sharedDocuments.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 text-gray-500">
             <span className="text-6xl mb-4">📝</span>
             <div className="text-lg font-medium mb-2">No documents yet</div>

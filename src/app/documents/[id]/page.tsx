@@ -29,9 +29,23 @@ export default async function DocumentPage({ params }: DocumentPageProps) {
 
   const document = await prisma.document.findUnique({
     where: { id: params.id },
+    include: {
+      sharedWith: {
+        where: { userId: user.id },
+      },
+    },
   });
 
-  if (!document || document.userId !== user.id) {
+  if (!document) {
+    return notFound();
+  }
+
+  // Check if user is the owner or has been shared with
+  const isOwner = document.userId === user.id;
+  const isShared = document.sharedWith.length > 0;
+  const canEdit = isOwner || (isShared && document.sharedWith[0].canEdit);
+
+  if (!isOwner && !isShared) {
     return notFound();
   }
 
@@ -48,7 +62,7 @@ export default async function DocumentPage({ params }: DocumentPageProps) {
           </Link>
         </div>
 
-        <DocumentEditor document={document} />
+        <DocumentEditor document={document} canEdit={canEdit} />
       </div>
     </main>
   );
