@@ -5,34 +5,38 @@ import { authOptions } from "../auth/[...nextauth]/route";
 
 // GET /api/documents - Get all documents for the current user
 export async function GET() {
-  try {
-    const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
 
-    if (!session?.user?.email) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
-
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    });
-
-    if (!user) {
-      return NextResponse.json({ message: "User not found" }, { status: 404 });
-    }
-
-    const documents = await prisma.document.findMany({
-      where: { userId: user.id },
-      orderBy: { updatedAt: "desc" },
-    });
-
-    return NextResponse.json(documents);
-  } catch (error) {
-    console.error("Error fetching documents:", error);
-    return NextResponse.json(
-      { message: "Something went wrong" },
-      { status: 500 }
-    );
+  if (!session?.user?.email) {
+    return new NextResponse("Unauthorized", { status: 401 });
   }
+
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+    include: {
+      documents: true,
+      sharedDocuments: {
+        include: {
+          document: true,
+        },
+      },
+    },
+  });
+
+  if (!user) {
+    return new NextResponse("User not found", { status: 404 });
+  }
+
+  const ownedDocuments = user.documents;
+  const sharedDocuments = user.sharedDocuments.map((share) => ({
+    ...share.document,
+    canEdit: share.canEdit,
+  }));
+
+  return NextResponse.json({
+    ownedDocuments,
+    sharedDocuments,
+  });
 }
 
 // POST /api/documents - Create a new document

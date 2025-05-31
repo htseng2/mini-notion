@@ -1,12 +1,41 @@
+"use client";
+
 import Link from "next/link";
-import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]/route";
-import { prisma } from "@/lib/prisma";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 import { PlusIcon, DocumentTextIcon } from "@heroicons/react/24/solid";
 import HamburgerMenu from "@/components/HamburgerMenu";
+import DocumentSearch from "@/components/DocumentSearch";
 
-export default async function Home() {
-  const session = await getServerSession(authOptions);
+interface Document {
+  id: string;
+  title: string;
+  updatedAt: Date;
+  canEdit?: boolean;
+}
+
+export default function Home() {
+  const { data: session } = useSession();
+  const [ownedDocuments, setOwnedDocuments] = useState<Document[]>([]);
+  const [sharedDocuments, setSharedDocuments] = useState<Document[]>([]);
+  const [filteredOwnedDocs, setFilteredOwnedDocs] = useState<Document[]>([]);
+  const [filteredSharedDocs, setFilteredSharedDocs] = useState<Document[]>([]);
+
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      if (!session?.user?.email) return;
+
+      const response = await fetch("/api/documents");
+      const data = await response.json();
+
+      setOwnedDocuments(data.ownedDocuments);
+      setSharedDocuments(data.sharedDocuments);
+      setFilteredOwnedDocs(data.ownedDocuments);
+      setFilteredSharedDocs(data.sharedDocuments);
+    };
+
+    fetchDocuments();
+  }, [session]);
 
   if (!session?.user?.email) {
     return (
@@ -37,29 +66,6 @@ export default async function Home() {
     );
   }
 
-  // Fetch user documents
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-    include: {
-      documents: true,
-      sharedDocuments: {
-        include: {
-          document: true,
-        },
-      },
-    },
-  });
-
-  if (!user) {
-    return null;
-  }
-
-  const ownedDocuments = user.documents;
-  const sharedDocuments = user.sharedDocuments.map((share) => ({
-    ...share.document,
-    canEdit: share.canEdit,
-  }));
-
   return (
     <main className="flex min-h-screen flex-col items-center bg-gradient-to-br from-indigo-100 via-white to-pink-100 p-8">
       <div className="w-full max-w-3xl mx-auto rounded-2xl bg-white shadow-2xl p-10">
@@ -74,7 +80,10 @@ export default async function Home() {
             >
               <PlusIcon className="h-5 w-5" /> New Document
             </Link>
-            <HamburgerMenu userName={user.name} userEmail={user.email} />
+            <HamburgerMenu
+              userName={session.user.name || ""}
+              userEmail={session.user.email}
+            />
           </div>
         </div>
 
@@ -83,8 +92,12 @@ export default async function Home() {
             <h2 className="text-xl font-semibold text-gray-900 mb-4">
               My Documents
             </h2>
+            <DocumentSearch
+              documents={ownedDocuments}
+              onSearch={setFilteredOwnedDocs}
+            />
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {ownedDocuments.map((doc) => (
+              {filteredOwnedDocs.map((doc) => (
                 <li
                   key={doc.id}
                   className="rounded-xl border bg-white p-6 shadow hover:shadow-lg transition flex flex-col justify-between min-h-[120px]"
@@ -110,8 +123,12 @@ export default async function Home() {
             <h2 className="text-xl font-semibold text-gray-900 mb-4">
               Shared with Me
             </h2>
+            <DocumentSearch
+              documents={sharedDocuments}
+              onSearch={setFilteredSharedDocs}
+            />
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {sharedDocuments.map((doc) => (
+              {filteredSharedDocs.map((doc) => (
                 <li
                   key={doc.id}
                   className="rounded-xl border bg-white p-6 shadow hover:shadow-lg transition flex flex-col justify-between min-h-[120px]"
