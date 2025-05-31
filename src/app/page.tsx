@@ -2,39 +2,12 @@
 
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
 import { PlusIcon, DocumentTextIcon } from "@heroicons/react/24/solid";
-import DocumentSearch from "@/components/DocumentSearch";
-
-interface Document {
-  id: string;
-  title: string;
-  updatedAt: Date;
-  canEdit?: boolean;
-}
+import { useDocuments } from "@/context/DocumentsContext";
 
 export default function Home() {
   const { data: session } = useSession();
-  const [ownedDocuments, setOwnedDocuments] = useState<Document[]>([]);
-  const [sharedDocuments, setSharedDocuments] = useState<Document[]>([]);
-  const [filteredOwnedDocs, setFilteredOwnedDocs] = useState<Document[]>([]);
-  const [filteredSharedDocs, setFilteredSharedDocs] = useState<Document[]>([]);
-
-  useEffect(() => {
-    const fetchDocuments = async () => {
-      if (!session?.user?.email) return;
-
-      const response = await fetch("/api/documents");
-      const data = await response.json();
-
-      setOwnedDocuments(data.ownedDocuments);
-      setSharedDocuments(data.sharedDocuments);
-      setFilteredOwnedDocs(data.ownedDocuments);
-      setFilteredSharedDocs(data.sharedDocuments);
-    };
-
-    fetchDocuments();
-  }, [session]);
+  const { filteredOwnedDocs, filteredSharedDocs } = useDocuments();
 
   if (!session?.user?.email) {
     return (
@@ -82,15 +55,11 @@ export default function Home() {
           </div>
         </div>
 
-        {ownedDocuments.length > 0 && (
+        {filteredOwnedDocs.length > 0 && (
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">
               My Documents
             </h2>
-            <DocumentSearch
-              documents={ownedDocuments}
-              onSearch={setFilteredOwnedDocs}
-            />
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {filteredOwnedDocs.map((doc) => (
                 <li
@@ -113,15 +82,11 @@ export default function Home() {
           </div>
         )}
 
-        {sharedDocuments.length > 0 && (
+        {filteredSharedDocs.length > 0 && (
           <div>
             <h2 className="text-xl font-semibold text-gray-900 mb-4">
               Shared with Me
             </h2>
-            <DocumentSearch
-              documents={sharedDocuments}
-              onSearch={setFilteredSharedDocs}
-            />
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {filteredSharedDocs.map((doc) => (
                 <li
@@ -149,7 +114,7 @@ export default function Home() {
           </div>
         )}
 
-        {ownedDocuments.length === 0 && sharedDocuments.length === 0 && (
+        {filteredOwnedDocs.length === 0 && filteredSharedDocs.length === 0 && (
           <div className="flex flex-col items-center justify-center py-16 text-gray-500">
             <span className="text-6xl mb-4">📝</span>
             <div className="text-lg font-medium mb-2">No documents yet</div>
