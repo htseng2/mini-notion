@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { PlusIcon, DocumentTextIcon } from "@heroicons/react/24/solid";
-import HamburgerMenu from "@/components/HamburgerMenu";
 import DocumentSearch from "@/components/DocumentSearch";
 
 interface Document {
@@ -39,7 +38,7 @@ export default function Home() {
 
   if (!session?.user?.email) {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-indigo-100 via-white to-pink-100 p-8">
+      <div className="flex min-h-screen flex-col items-center justify-center p-8">
         <div className="rounded-2xl bg-white p-10 shadow-2xl text-center max-w-md w-full">
           <h1 className="text-4xl font-extrabold mb-4 text-indigo-700">
             Welcome to Mini-Notion
@@ -62,12 +61,12 @@ export default function Home() {
             </Link>
           </div>
         </div>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center bg-gradient-to-br from-indigo-100 via-white to-pink-100 p-8">
+    <div className="p-8">
       <div className="w-full max-w-3xl mx-auto rounded-2xl bg-white shadow-2xl p-10">
         <div className="flex items-center justify-between mb-10">
           <h1 className="text-3xl font-extrabold text-indigo-700">
@@ -80,10 +79,6 @@ export default function Home() {
             >
               <PlusIcon className="h-5 w-5" /> New Document
             </Link>
-            <HamburgerMenu
-              userName={session.user.name || ""}
-              userEmail={session.user.email}
-            />
           </div>
         </div>
 
@@ -168,6 +163,6 @@ export default function Home() {
           </div>
         )}
       </div>
-    </main>
+    </div>
   );
 }
