@@ -8,7 +8,6 @@ import { DocumentsProvider, useDocuments } from "@/context/DocumentsContext";
 function MainLayoutInner({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
   const { isExpanded } = useSideNav();
-  const { ownedDocuments } = useDocuments();
 
   if (!session?.user?.email) {
     return <>{children}</>;
@@ -16,11 +15,7 @@ function MainLayoutInner({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <SideNav
-        userName={session.user.name}
-        userEmail={session.user.email}
-        documents={ownedDocuments}
-      />
+      <SideNav userName={session.user.name} userEmail={session.user.email} />
       <main
         className={`min-h-screen bg-gradient-to-br from-indigo-100 via-white to-pink-100 transition-all duration-300 ${
           isExpanded ? "ml-64" : "ml-16"

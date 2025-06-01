@@ -11,6 +11,7 @@ import {
 } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { useSideNav } from "@/context/SideNavContext";
+import { useDocuments } from "@/context/DocumentsContext";
 import SearchModal from "./SearchModal";
 
 interface Document {
@@ -23,15 +24,11 @@ interface Document {
 interface SideNavProps {
   userName?: string | null;
   userEmail?: string;
-  documents: Document[];
 }
 
-export default function SideNav({
-  userName,
-  userEmail,
-  documents,
-}: SideNavProps) {
+export default function SideNav({ userName, userEmail }: SideNavProps) {
   const { isExpanded, setIsExpanded } = useSideNav();
+  const { ownedDocuments, sharedDocuments } = useDocuments();
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
@@ -44,7 +41,7 @@ export default function SideNav({
     setIsSearchModalOpen(true);
   };
 
-  const searchResults = documents.filter((doc) =>
+  const searchResults = [...ownedDocuments, ...sharedDocuments].filter((doc) =>
     doc.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -110,7 +107,11 @@ export default function SideNav({
           <div className="border-t border-gray-200" />
           <div className="h-4" /> {/* 16px spacing after divider */}
           <button
-            onClick={() => signOut({ callbackUrl: "/" })}
+            onClick={() => {
+              if (confirm("Are you sure you want to sign out?")) {
+                signOut({ callbackUrl: "/" });
+              }
+            }}
             className={`flex items-center hover:bg-gray-50 transition w-full ${
               isExpanded ? "px-4 py-2 gap-3" : "p-4 justify-center"
             }`}
