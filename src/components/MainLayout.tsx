@@ -8,7 +8,7 @@ import { DocumentsProvider, useDocuments } from "@/context/DocumentsContext";
 function MainLayoutInner({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
   const { isExpanded } = useSideNav();
-  const { ownedDocuments, setFilteredOwnedDocs } = useDocuments();
+  const { ownedDocuments } = useDocuments();
 
   if (!session?.user?.email) {
     return <>{children}</>;
@@ -20,7 +20,6 @@ function MainLayoutInner({ children }: { children: React.ReactNode }) {
         userName={session.user.name}
         userEmail={session.user.email}
         documents={ownedDocuments}
-        onSearch={setFilteredOwnedDocs}
       />
       <main
         className={`min-h-screen bg-gradient-to-br from-indigo-100 via-white to-pink-100 transition-all duration-300 ${

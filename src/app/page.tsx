@@ -7,7 +7,7 @@ import { useDocuments } from "@/context/DocumentsContext";
 
 export default function Home() {
   const { data: session } = useSession();
-  const { filteredOwnedDocs, filteredSharedDocs } = useDocuments();
+  const { ownedDocuments, sharedDocuments } = useDocuments();
 
   if (!session?.user?.email) {
     return (
@@ -55,13 +55,13 @@ export default function Home() {
           </div>
         </div>
 
-        {filteredOwnedDocs.length > 0 && (
+        {ownedDocuments.length > 0 && (
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">
               My Documents
             </h2>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {filteredOwnedDocs.map((doc) => (
+              {ownedDocuments.map((doc) => (
                 <li
                   key={doc.id}
                   className="rounded-xl border bg-white p-6 shadow hover:shadow-lg transition flex flex-col justify-between min-h-[120px]"
@@ -70,25 +70,25 @@ export default function Home() {
                     href={`/documents/${doc.id}`}
                     className="text-xl font-semibold text-indigo-700 hover:underline flex items-center gap-2"
                   >
-                    <DocumentTextIcon className="h-6 w-6 text-indigo-400" />
+                    <DocumentTextIcon className="h-5 w-5" />
                     {doc.title}
                   </Link>
-                  <div className="text-xs text-gray-500 mt-3">
-                    Last updated: {new Date(doc.updatedAt).toLocaleString()}
-                  </div>
+                  <p className="text-sm text-gray-500 mt-2">
+                    Last updated: {new Date(doc.updatedAt).toLocaleDateString()}
+                  </p>
                 </li>
               ))}
             </ul>
           </div>
         )}
 
-        {filteredSharedDocs.length > 0 && (
+        {sharedDocuments.length > 0 && (
           <div>
             <h2 className="text-xl font-semibold text-gray-900 mb-4">
               Shared with Me
             </h2>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {filteredSharedDocs.map((doc) => (
+              {sharedDocuments.map((doc) => (
                 <li
                   key={doc.id}
                   className="rounded-xl border bg-white p-6 shadow hover:shadow-lg transition flex flex-col justify-between min-h-[120px]"
@@ -97,16 +97,17 @@ export default function Home() {
                     href={`/documents/${doc.id}`}
                     className="text-xl font-semibold text-indigo-700 hover:underline flex items-center gap-2"
                   >
-                    <DocumentTextIcon className="h-6 w-6 text-indigo-400" />
+                    <DocumentTextIcon className="h-5 w-5" />
                     {doc.title}
                   </Link>
-                  <div className="flex flex-col gap-1">
-                    <div className="text-xs text-gray-500">
-                      Last updated: {new Date(doc.updatedAt).toLocaleString()}
-                    </div>
-                    <div className="text-xs text-indigo-600">
-                      {doc.canEdit ? "Can edit" : "View only"}
-                    </div>
+                  <div className="mt-2">
+                    <p className="text-sm text-gray-500">
+                      Last updated:{" "}
+                      {new Date(doc.updatedAt).toLocaleDateString()}
+                    </p>
+                    {!doc.canEdit && (
+                      <p className="text-sm text-gray-500 mt-1">(View only)</p>
+                    )}
                   </div>
                 </li>
               ))}
@@ -114,17 +115,17 @@ export default function Home() {
           </div>
         )}
 
-        {filteredOwnedDocs.length === 0 && filteredSharedDocs.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-16 text-gray-500">
-            <span className="text-6xl mb-4">📝</span>
-            <div className="text-lg font-medium mb-2">No documents yet</div>
-            <div className="mb-4">
-              Click{" "}
-              <span className="font-semibold text-indigo-600">
-                New Document
-              </span>{" "}
-              to create your first note!
-            </div>
+        {ownedDocuments.length === 0 && sharedDocuments.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-gray-500 mb-4">
+              You don't have any documents yet.
+            </p>
+            <Link
+              href="/documents/new"
+              className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-3 text-white font-semibold shadow hover:bg-indigo-500 transition"
+            >
+              <PlusIcon className="h-5 w-5" /> Create Your First Document
+            </Link>
           </div>
         )}
       </div>
