@@ -14,6 +14,7 @@ interface DocumentPageProps {
 
 export default async function DocumentPage({ params }: DocumentPageProps) {
   const session = await getServerSession(authOptions);
+  const { id } = await params;
 
   if (!session?.user?.email) {
     return notFound();
@@ -28,7 +29,7 @@ export default async function DocumentPage({ params }: DocumentPageProps) {
   }
 
   const document = await prisma.document.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       sharedWith: {
         where: { userId: user.id },

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { TrashIcon, ShareIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { useDocuments } from "@/context/DocumentsContext";
 
 interface Document {
   id: string;
@@ -30,6 +31,7 @@ export default function DocumentEditor({
   canEdit,
 }: DocumentEditorProps) {
   const router = useRouter();
+  const { setOwnedDocuments, setSharedDocuments } = useDocuments();
   const [content, setContent] = useState(document.content || "");
   const [title, setTitle] = useState(document.title);
   const [saving, setSaving] = useState(false);
@@ -91,6 +93,12 @@ export default function DocumentEditor({
           const data = await response.json();
           throw new Error(data.message || "Something went wrong");
         }
+
+        // Refresh the documents list
+        const docsResponse = await fetch("/api/documents");
+        const docsData = await docsResponse.json();
+        setOwnedDocuments(docsData.ownedDocuments);
+        setSharedDocuments(docsData.sharedDocuments);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Something went wrong");
       } finally {
@@ -99,7 +107,16 @@ export default function DocumentEditor({
     }, 1000); // Debounce for 1 second
 
     return () => clearTimeout(saveTimeout);
-  }, [content, title, document.id, document.title, document.content, canEdit]);
+  }, [
+    content,
+    title,
+    document.id,
+    document.title,
+    document.content,
+    canEdit,
+    setOwnedDocuments,
+    setSharedDocuments,
+  ]);
 
   const handleDelete = async () => {
     if (

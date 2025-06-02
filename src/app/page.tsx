@@ -61,23 +61,30 @@ export default function Home() {
               My Documents
             </h2>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {ownedDocuments.map((doc) => (
-                <li
-                  key={doc.id}
-                  className="rounded-xl border bg-white p-6 shadow hover:shadow-lg transition flex flex-col justify-between min-h-[120px]"
-                >
-                  <Link
-                    href={`/documents/${doc.id}`}
-                    className="text-xl font-semibold text-indigo-700 hover:underline flex items-center gap-2"
+              {[...ownedDocuments]
+                .sort(
+                  (a, b) =>
+                    new Date(b.updatedAt).getTime() -
+                    new Date(a.updatedAt).getTime()
+                )
+                .map((doc) => (
+                  <li
+                    key={doc.id}
+                    className="rounded-xl border bg-white p-6 shadow hover:shadow-lg transition flex flex-col justify-between min-h-[120px]"
                   >
-                    <DocumentTextIcon className="h-5 w-5" />
-                    {doc.title}
-                  </Link>
-                  <p className="text-sm text-gray-500 mt-2">
-                    Last updated: {new Date(doc.updatedAt).toLocaleDateString()}
-                  </p>
-                </li>
-              ))}
+                    <Link
+                      href={`/documents/${doc.id}`}
+                      className="text-xl font-semibold text-indigo-700 hover:underline flex items-center gap-2"
+                    >
+                      <DocumentTextIcon className="h-5 w-5" />
+                      {doc.title}
+                    </Link>
+                    <p className="text-sm text-gray-500 mt-2">
+                      Last updated:{" "}
+                      {new Date(doc.updatedAt).toLocaleDateString()}
+                    </p>
+                  </li>
+                ))}
             </ul>
           </div>
         )}
@@ -88,29 +95,37 @@ export default function Home() {
               Shared with Me
             </h2>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {sharedDocuments.map((doc) => (
-                <li
-                  key={doc.id}
-                  className="rounded-xl border bg-white p-6 shadow hover:shadow-lg transition flex flex-col justify-between min-h-[120px]"
-                >
-                  <Link
-                    href={`/documents/${doc.id}`}
-                    className="text-xl font-semibold text-indigo-700 hover:underline flex items-center gap-2"
+              {[...sharedDocuments]
+                .sort(
+                  (a, b) =>
+                    new Date(b.updatedAt).getTime() -
+                    new Date(a.updatedAt).getTime()
+                )
+                .map((doc) => (
+                  <li
+                    key={doc.id}
+                    className="rounded-xl border bg-white p-6 shadow hover:shadow-lg transition flex flex-col justify-between min-h-[120px]"
                   >
-                    <DocumentTextIcon className="h-5 w-5" />
-                    {doc.title}
-                  </Link>
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-500">
-                      Last updated:{" "}
-                      {new Date(doc.updatedAt).toLocaleDateString()}
-                    </p>
-                    {!doc.canEdit && (
-                      <p className="text-sm text-gray-500 mt-1">(View only)</p>
-                    )}
-                  </div>
-                </li>
-              ))}
+                    <Link
+                      href={`/documents/${doc.id}`}
+                      className="text-xl font-semibold text-indigo-700 hover:underline flex items-center gap-2"
+                    >
+                      <DocumentTextIcon className="h-5 w-5" />
+                      {doc.title}
+                    </Link>
+                    <div className="mt-2">
+                      <p className="text-sm text-gray-500">
+                        Last updated:{" "}
+                        {new Date(doc.updatedAt).toLocaleDateString()}
+                      </p>
+                      {!doc.canEdit && (
+                        <p className="text-sm text-gray-500 mt-1">
+                          (View only)
+                        </p>
+                      )}
+                    </div>
+                  </li>
+                ))}
             </ul>
           </div>
         )}
@@ -118,7 +133,7 @@ export default function Home() {
         {ownedDocuments.length === 0 && sharedDocuments.length === 0 && (
           <div className="text-center py-12">
             <p className="text-gray-500 mb-4">
-              You don't have any documents yet.
+              You don&apos;t have any documents yet.
             </p>
             <Link
               href="/documents/new"
