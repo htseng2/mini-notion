@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { TrashIcon, ShareIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { useDocuments } from "@/context/DocumentsContext";
+import RichTextEditor from "./RichTextEditor";
 
 interface Document {
   id: string;
@@ -267,11 +268,9 @@ export default function DocumentEditor({
             )}
           </div>
         </div>
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Start writing your document..."
-          className="w-full min-h-[500px] rounded-lg border-gray-300 px-4 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 resize-none"
+        <RichTextEditor
+          content={content}
+          onChange={setContent}
           readOnly={!canEdit}
         />
         {saving && (
