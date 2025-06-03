@@ -3,6 +3,10 @@ import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
+import ListItem from "@tiptap/extension-list-item";
+import BulletList from "@tiptap/extension-bullet-list";
+import OrderedList from "@tiptap/extension-ordered-list";
+import "../styles/tiptap.css";
 import {
   BoldIcon,
   ItalicIcon,
@@ -25,7 +29,26 @@ export default function RichTextEditor({
 }: RichTextEditorProps) {
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        bulletList: false,
+        orderedList: false,
+        listItem: false,
+      }),
+      BulletList.configure({
+        HTMLAttributes: {
+          class: "tiptap-bullet-list",
+        },
+      }),
+      OrderedList.configure({
+        HTMLAttributes: {
+          class: "tiptap-ordered-list",
+        },
+      }),
+      ListItem.configure({
+        HTMLAttributes: {
+          class: "tiptap-list-item",
+        },
+      }),
       Link.configure({
         openOnClick: false,
       }),

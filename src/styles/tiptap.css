@@ -1,0 +1,57 @@
+/* TipTap Editor Styles */
+.ProseMirror {
+  outline: none !important;
+}
+
+.ProseMirror .tiptap-bullet-list {
+  list-style-type: disc;
+  margin-left: 1.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding-left: 1.5rem;
+}
+
+.ProseMirror .tiptap-ordered-list {
+  list-style-type: decimal;
+  margin-left: 1.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding-left: 1.5rem;
+}
+
+.ProseMirror .tiptap-list-item {
+  margin: 0.25rem 0;
+  display: list-item;
+}
+
+.ProseMirror ul.tiptap-bullet-list {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+
+.ProseMirror ol.tiptap-ordered-list {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+}
+
+.ProseMirror p {
+  margin: 0.75rem 0;
+}
+
+.ProseMirror strong {
+  font-weight: bold;
+}
+
+.ProseMirror em {
+  font-style: italic;
+}
+
+.ProseMirror a {
+  color: #4f46e5;
+  text-decoration: underline;
+}
+
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+}
