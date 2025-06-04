@@ -51,12 +51,12 @@ export default async function DocumentPage({ params }: DocumentPageProps) {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center bg-gradient-to-br from-indigo-100 via-white to-pink-100 p-8">
-      <div className="w-full max-w-4xl mx-auto rounded-2xl bg-white shadow-2xl p-10">
+    <main className="flex min-h-screen flex-col items-center bg-gradient-to-br from-blue-50 via-background to-purple-50 dark:from-slate-900 dark:via-background dark:to-slate-800 p-8">
+      <div className="w-full max-w-4xl mx-auto rounded-2xl bg-card border border-border shadow-2xl p-10">
         <div className="mb-8">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition"
+            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition"
           >
             <ArrowLeftIcon className="h-5 w-5" />
             Back to Documents

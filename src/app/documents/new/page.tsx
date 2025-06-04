@@ -43,19 +43,19 @@ export default function NewDocument() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center bg-gradient-to-br from-indigo-100 via-white to-pink-100 p-8">
-      <div className="w-full max-w-3xl mx-auto rounded-2xl bg-white shadow-2xl p-10">
+    <main className="flex min-h-screen flex-col items-center bg-gradient-to-br from-blue-50 via-background to-purple-50 dark:from-slate-900 dark:via-background dark:to-slate-800 p-8">
+      <div className="w-full max-w-3xl mx-auto rounded-2xl bg-card border border-border shadow-2xl p-10">
         <div className="mb-8">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition"
+            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition"
           >
             <ArrowLeftIcon className="h-5 w-5" />
             Back to Documents
           </Link>
         </div>
 
-        <h1 className="text-3xl font-extrabold text-indigo-700 mb-8">
+        <h1 className="text-3xl font-extrabold text-primary mb-8">
           Create New Document
         </h1>
 
@@ -63,7 +63,7 @@ export default function NewDocument() {
           <div>
             <label
               htmlFor="title"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-foreground mb-2"
             >
               Document Title
             </label>
@@ -74,13 +74,13 @@ export default function NewDocument() {
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter document title"
               required
-              className="w-full rounded-lg border-gray-300 px-4 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+              className="w-full rounded-lg border border-input bg-background px-4 py-3 text-foreground shadow-sm placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:border-ring"
             />
           </div>
 
           {error && (
-            <div className="rounded-md bg-red-50 p-4">
-              <div className="text-sm text-red-700">{error}</div>
+            <div className="rounded-md bg-destructive/10 border border-destructive/20 p-4">
+              <div className="text-sm text-destructive">{error}</div>
             </div>
           )}
 
@@ -88,7 +88,7 @@ export default function NewDocument() {
             <button
               type="submit"
               disabled={loading}
-              className="rounded-lg bg-indigo-600 px-6 py-3 text-white font-semibold hover:bg-indigo-500 transition disabled:opacity-50"
+              className="rounded-lg bg-primary px-6 py-3 text-primary-foreground font-semibold hover:bg-primary/90 transition disabled:opacity-50"
             >
               {loading ? "Creating..." : "Create Document"}
             </button>

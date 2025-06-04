@@ -63,19 +63,19 @@ export default function SearchModal({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white/95 backdrop-blur-sm p-6 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-background/95 backdrop-blur-sm p-6 text-left align-middle shadow-xl transition-all border border-border">
                 <div className="flex items-center justify-between mb-4">
                   <Dialog.Title
                     as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900"
+                    className="text-lg font-medium leading-6 text-foreground"
                   >
                     Search Documents
                   </Dialog.Title>
                   <button
                     onClick={onClose}
-                    className="rounded-full p-1 hover:bg-gray-100 transition"
+                    className="rounded-full p-1 hover:bg-accent transition"
                   >
-                    <XMarkIcon className="h-5 w-5 text-gray-500" />
+                    <XMarkIcon className="h-5 w-5 text-muted-foreground" />
                   </button>
                 </div>
 
@@ -86,19 +86,19 @@ export default function SearchModal({
                     placeholder="Search documents..."
                     value={searchQuery}
                     onChange={(e) => onSearchQueryChange(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-2 rounded-lg border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring"
                   />
-                  <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 </div>
 
                 {searchQuery && (
-                  <p className="text-sm text-gray-500 mb-4">
+                  <p className="text-sm text-muted-foreground mb-4">
                     Showing results for &ldquo;{searchQuery}&rdquo;
                   </p>
                 )}
 
                 {searchResults.length === 0 ? (
-                  <p className="text-gray-500 text-center py-4">
+                  <p className="text-muted-foreground text-center py-4">
                     No documents found
                   </p>
                 ) : (
@@ -108,12 +108,12 @@ export default function SearchModal({
                         key={doc.id}
                         href={`/documents/${doc.id}`}
                         onClick={onClose}
-                        className="block p-3 rounded-lg hover:bg-gray-50 transition"
+                        className="block p-3 rounded-lg hover:bg-accent transition"
                       >
-                        <h4 className="font-medium text-gray-900">
+                        <h4 className="font-medium text-foreground">
                           {doc.title}
                         </h4>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-muted-foreground">
                           {new Date(doc.updatedAt).toLocaleDateString()}
                         </p>
                       </Link>

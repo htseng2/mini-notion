@@ -245,13 +245,13 @@ export default function DocumentEditor({
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Untitled Document"
-            className="w-full text-3xl font-extrabold text-indigo-700 bg-transparent border-none focus:ring-0 p-0"
+            className="w-full text-3xl font-extrabold text-primary bg-transparent border-none focus:ring-0 p-0 placeholder:text-muted-foreground"
             readOnly={!canEdit}
           />
           <div className="flex items-center gap-2">
             <button
               onClick={() => setShowShareModal(true)}
-              className="flex items-center gap-2 px-4 py-2 text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-lg transition"
+              className="flex items-center gap-2 px-4 py-2 text-primary hover:text-primary/80 hover:bg-accent rounded-lg transition"
             >
               <ShareIcon className="h-5 w-5" />
               Share
@@ -260,7 +260,7 @@ export default function DocumentEditor({
               <button
                 onClick={handleDelete}
                 disabled={isDeleting}
-                className="flex items-center gap-2 px-4 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2 text-destructive hover:text-destructive/80 hover:bg-destructive/10 rounded-lg transition disabled:opacity-50"
               >
                 <TrashIcon className="h-5 w-5" />
                 {isDeleting ? "Deleting..." : "Delete"}
@@ -274,28 +274,28 @@ export default function DocumentEditor({
           readOnly={!canEdit}
         />
         {saving && (
-          <div className="absolute bottom-4 right-4 text-sm text-gray-500">
+          <div className="absolute bottom-4 right-4 text-sm text-muted-foreground">
             Saving...
           </div>
         )}
       </div>
 
       {error && (
-        <div className="rounded-md bg-red-50 p-4">
-          <div className="text-sm text-red-700">{error}</div>
+        <div className="rounded-md bg-destructive/10 border border-destructive/20 p-4">
+          <div className="text-sm text-destructive">{error}</div>
         </div>
       )}
 
       {showShareModal && (
         <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white/95 backdrop-blur-sm rounded-lg p-6 max-w-md w-full shadow-2xl">
-            <div className="flex items-center justify-between mb-6 border-b border-gray-200 pb-3">
-              <h2 className="text-2xl font-bold text-indigo-700">
+          <div className="bg-background/95 backdrop-blur-sm rounded-lg p-6 max-w-md w-full shadow-2xl border border-border">
+            <div className="flex items-center justify-between mb-6 border-b border-border pb-3">
+              <h2 className="text-2xl font-bold text-primary">
                 Share Document
               </h2>
               <button
                 onClick={() => setShowShareModal(false)}
-                className="text-gray-400 hover:text-gray-500"
+                className="text-muted-foreground hover:text-foreground"
               >
                 <XMarkIcon className="h-6 w-6" />
               </button>
@@ -305,7 +305,7 @@ export default function DocumentEditor({
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-foreground mb-2"
                 >
                   Email Address
                 </label>
@@ -316,7 +316,7 @@ export default function DocumentEditor({
                   onChange={(e) => setShareEmail(e.target.value)}
                   placeholder="Enter email address"
                   required
-                  className="w-full rounded-lg border-gray-300 px-4 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                  className="w-full rounded-lg border border-input bg-background px-4 py-2 text-foreground shadow-sm placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:border-ring"
                 />
               </div>
               <div className="flex items-center gap-2">
@@ -325,24 +325,24 @@ export default function DocumentEditor({
                   id="canEdit"
                   checked={shareCanEdit}
                   onChange={(e) => setShareCanEdit(e.target.checked)}
-                  className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                  className="rounded border-input text-primary focus:ring-primary"
                 />
                 <label
                   htmlFor="canEdit"
-                  className="text-sm font-medium text-gray-700"
+                  className="text-sm font-medium text-foreground"
                 >
                   Allow editing
                 </label>
               </div>
               {shareError && (
-                <div className="rounded-md bg-red-50 p-4">
-                  <div className="text-sm text-red-700">{shareError}</div>
+                <div className="rounded-md bg-destructive/10 border border-destructive/20 p-4">
+                  <div className="text-sm text-destructive">{shareError}</div>
                 </div>
               )}
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-500 transition"
+                  className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition"
                 >
                   Share
                 </button>
@@ -350,23 +350,25 @@ export default function DocumentEditor({
             </form>
 
             {isLoadingShares ? (
-              <div className="text-center text-gray-500">Loading shares...</div>
+              <div className="text-center text-muted-foreground">
+                Loading shares...
+              </div>
             ) : shares.length > 0 ? (
               <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-3">
+                <h3 className="text-sm font-medium text-foreground mb-3">
                   People with access
                 </h3>
                 <ul className="space-y-2">
                   {shares.map((share) => (
                     <li
                       key={share.id}
-                      className="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-3"
+                      className="flex items-center justify-between bg-muted rounded-lg px-4 py-3"
                     >
                       <div className="flex-1">
-                        <div className="font-medium text-gray-900">
+                        <div className="font-medium text-foreground">
                           {share.user?.name || "Unknown User"}
                         </div>
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-muted-foreground">
                           {share.user?.email || "No email"}
                         </div>
                       </div>
@@ -382,11 +384,11 @@ export default function DocumentEditor({
                                 e.target.checked
                               )
                             }
-                            className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                            className="rounded border-input text-primary focus:ring-primary"
                           />
                           <label
                             htmlFor={`edit-${share.id}`}
-                            className="text-sm text-gray-600"
+                            className="text-sm text-muted-foreground"
                           >
                             Allow editing
                           </label>
@@ -395,7 +397,7 @@ export default function DocumentEditor({
                           onClick={() =>
                             handleRemoveShare(share.user?.email || "")
                           }
-                          className="text-gray-400 hover:text-red-500 transition"
+                          className="text-muted-foreground hover:text-destructive transition"
                           title="Remove access"
                         >
                           <XMarkIcon className="h-5 w-5" />
@@ -406,7 +408,7 @@ export default function DocumentEditor({
                 </ul>
               </div>
             ) : (
-              <div className="text-center text-gray-500">
+              <div className="text-center text-muted-foreground">
                 No one has access to this document yet
               </div>
             )}

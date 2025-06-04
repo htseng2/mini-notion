@@ -71,12 +71,12 @@ export default function RichTextEditor({
   return (
     <div className="space-y-2">
       {!readOnly && (
-        <div className="flex items-center gap-1 p-2 bg-white rounded-lg border border-gray-200 shadow-sm">
-          <div className="flex items-center gap-1 border-r border-gray-200 pr-2">
+        <div className="flex items-center gap-1 p-2 bg-card rounded-lg border border-border shadow-sm">
+          <div className="flex items-center gap-1 border-r border-border pr-2">
             <button
               onClick={() => editor.chain().focus().toggleBold().run()}
-              className={`p-2 rounded hover:bg-indigo-50 text-gray-600 hover:text-indigo-600 transition-colors ${
-                editor.isActive("bold") ? "bg-indigo-50 text-indigo-600" : ""
+              className={`p-2 rounded hover:bg-accent text-muted-foreground hover:text-primary transition-colors ${
+                editor.isActive("bold") ? "bg-accent text-primary" : ""
               }`}
               title="Bold"
             >
@@ -84,21 +84,19 @@ export default function RichTextEditor({
             </button>
             <button
               onClick={() => editor.chain().focus().toggleItalic().run()}
-              className={`p-2 rounded hover:bg-indigo-50 text-gray-600 hover:text-indigo-600 transition-colors ${
-                editor.isActive("italic") ? "bg-indigo-50 text-indigo-600" : ""
+              className={`p-2 rounded hover:bg-accent text-muted-foreground hover:text-primary transition-colors ${
+                editor.isActive("italic") ? "bg-accent text-primary" : ""
               }`}
               title="Italic"
             >
               <ItalicIcon className="h-5 w-5" />
             </button>
           </div>
-          <div className="flex items-center gap-1 border-r border-gray-200 px-2">
+          <div className="flex items-center gap-1 border-r border-border px-2">
             <button
               onClick={() => editor.chain().focus().toggleBulletList().run()}
-              className={`p-2 rounded hover:bg-indigo-50 text-gray-600 hover:text-indigo-600 transition-colors ${
-                editor.isActive("bulletList")
-                  ? "bg-indigo-50 text-indigo-600"
-                  : ""
+              className={`p-2 rounded hover:bg-accent text-muted-foreground hover:text-primary transition-colors ${
+                editor.isActive("bulletList") ? "bg-accent text-primary" : ""
               }`}
               title="Bullet List"
             >
@@ -106,10 +104,8 @@ export default function RichTextEditor({
             </button>
             <button
               onClick={() => editor.chain().focus().toggleOrderedList().run()}
-              className={`p-2 rounded hover:bg-indigo-50 text-gray-600 hover:text-indigo-600 transition-colors ${
-                editor.isActive("orderedList")
-                  ? "bg-indigo-50 text-indigo-600"
-                  : ""
+              className={`p-2 rounded hover:bg-accent text-muted-foreground hover:text-primary transition-colors ${
+                editor.isActive("orderedList") ? "bg-accent text-primary" : ""
               }`}
               title="Numbered List"
             >
@@ -124,8 +120,8 @@ export default function RichTextEditor({
                   editor.chain().focus().setLink({ href: url }).run();
                 }
               }}
-              className={`p-2 rounded hover:bg-indigo-50 text-gray-600 hover:text-indigo-600 transition-colors ${
-                editor.isActive("link") ? "bg-indigo-50 text-indigo-600" : ""
+              className={`p-2 rounded hover:bg-accent text-muted-foreground hover:text-primary transition-colors ${
+                editor.isActive("link") ? "bg-accent text-primary" : ""
               }`}
               title="Add Link"
             >
@@ -138,7 +134,7 @@ export default function RichTextEditor({
                   editor.chain().focus().setImage({ src: url }).run();
                 }
               }}
-              className="p-2 rounded hover:bg-indigo-50 text-gray-600 hover:text-indigo-600 transition-colors"
+              className="p-2 rounded hover:bg-accent text-muted-foreground hover:text-primary transition-colors"
               title="Add Image"
             >
               <PhotoIcon className="h-5 w-5" />
@@ -148,7 +144,7 @@ export default function RichTextEditor({
       )}
       <EditorContent
         editor={editor}
-        className="prose prose-indigo max-w-none min-h-[500px] rounded-lg border-gray-300 px-4 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+        className="prose prose-neutral dark:prose-invert max-w-none min-h-[500px] rounded-lg border border-input bg-background px-4 py-3 text-foreground shadow-sm focus-within:ring-2 focus-within:ring-ring focus-within:border-ring"
       />
     </div>
   );
