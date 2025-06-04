@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
+    "postinstall": "prisma generate",
     "db:start": "brew services start postgresql@14",
     "db:stop": "brew services stop postgresql@14",
     "db:restart": "brew services restart postgresql@14",
