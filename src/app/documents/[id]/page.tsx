@@ -51,7 +51,7 @@ export default async function DocumentPage({ params }: DocumentPageProps) {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center bg-gradient-to-br from-blue-50 via-background to-purple-50 dark:from-slate-900 dark:via-background dark:to-slate-800 p-8">
+    <div className="flex min-h-screen flex-col items-center p-8">
       <div className="w-full max-w-4xl mx-auto rounded-2xl bg-card border border-border shadow-2xl p-10">
         <div className="mb-8">
           <Link
@@ -65,6 +65,6 @@ export default async function DocumentPage({ params }: DocumentPageProps) {
 
         <DocumentEditor document={document} canEdit={canEdit} />
       </div>
-    </main>
+    </div>
   );
 }

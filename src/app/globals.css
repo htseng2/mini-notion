@@ -1,49 +1,49 @@
 @import "tailwindcss";
 
 :root {
-  /* Light mode colors */
-  --background: #ffffff;
-  --foreground: #171717;
-  --card: #ffffff;
-  --card-foreground: #171717;
-  --popover: #ffffff;
-  --popover-foreground: #171717;
-  --primary: #0ea5e9;
-  --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #0f172a;
-  --muted: #f8fafc;
-  --muted-foreground: #64748b;
-  --accent: #f1f5f9;
-  --accent-foreground: #0f172a;
-  --destructive: #ef4444;
-  --destructive-foreground: #ffffff;
-  --border: #e2e8f0;
-  --input: #e2e8f0;
-  --ring: #0ea5e9;
+  /* Light mode colors (default) - improved contrast */
+  --background: 255 255 255; /* #ffffff */
+  --foreground: 15 15 15; /* #0f0f0f - darker for better contrast */
+  --card: 255 255 255; /* #ffffff */
+  --card-foreground: 15 15 15; /* #0f0f0f - darker for better contrast */
+  --popover: 255 255 255; /* #ffffff */
+  --popover-foreground: 15 15 15; /* #0f0f0f */
+  --primary: 14 165 233; /* #0ea5e9 */
+  --primary-foreground: 255 255 255; /* #ffffff */
+  --secondary: 244 244 245; /* #f4f4f5 - slightly darker gray */
+  --secondary-foreground: 24 24 27; /* #18181b - much darker */
+  --muted: 248 248 248; /* #f8f8f8 - subtle gray */
+  --muted-foreground: 39 39 42; /* #27272a - much darker for readability */
+  --accent: 244 244 245; /* #f4f4f5 */
+  --accent-foreground: 24 24 27; /* #18181b - much darker */
+  --destructive: 220 38 38; /* #dc2626 - slightly darker red */
+  --destructive-foreground: 255 255 255; /* #ffffff */
+  --border: 229 229 229; /* #e5e5e5 - slightly darker border */
+  --input: 229 229 229; /* #e5e5e5 */
+  --ring: 14 165 233; /* #0ea5e9 */
 }
 
 .dark {
   /* Dark mode colors */
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  --card: #111111;
-  --card-foreground: #ededed;
-  --popover: #111111;
-  --popover-foreground: #ededed;
-  --primary: #0ea5e9;
-  --primary-foreground: #ffffff;
-  --secondary: #1e293b;
-  --secondary-foreground: #f1f5f9;
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
-  --accent: #1e293b;
-  --accent-foreground: #f1f5f9;
-  --destructive: #ef4444;
-  --destructive-foreground: #ffffff;
-  --border: #334155;
-  --input: #334155;
-  --ring: #0ea5e9;
+  --background: 10 10 10; /* #0a0a0a */
+  --foreground: 237 237 237; /* #ededed */
+  --card: 17 17 17; /* #111111 */
+  --card-foreground: 237 237 237; /* #ededed */
+  --popover: 17 17 17; /* #111111 */
+  --popover-foreground: 237 237 237; /* #ededed */
+  --primary: 14 165 233; /* #0ea5e9 */
+  --primary-foreground: 255 255 255; /* #ffffff */
+  --secondary: 30 41 59; /* #1e293b */
+  --secondary-foreground: 241 245 249; /* #f1f5f9 */
+  --muted: 30 41 59; /* #1e293b */
+  --muted-foreground: 148 163 184; /* #94a3b8 */
+  --accent: 30 41 59; /* #1e293b */
+  --accent-foreground: 241 245 249; /* #f1f5f9 */
+  --destructive: 239 68 68; /* #ef4444 */
+  --destructive-foreground: 255 255 255; /* #ffffff */
+  --border: 51 65 85; /* #334155 */
+  --input: 51 65 85; /* #334155 */
+  --ring: 14 165 233; /* #0ea5e9 */
 }
 
 @theme inline {
@@ -71,11 +71,11 @@
 }
 
 * {
-  border-color: var(--border);
+  border-color: rgb(var(--border));
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  background-color: rgb(var(--background));
+  color: rgb(var(--foreground));
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
