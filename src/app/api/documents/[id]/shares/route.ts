@@ -6,10 +6,11 @@ import { authOptions } from "@/lib/auth";
 // GET /api/documents/[id]/shares - Get all shares for a document
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
+    const { id } = await params;
 
     if (!session?.user?.email) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -24,7 +25,7 @@ export async function GET(
     }
 
     const document = await prisma.document.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!document) {
@@ -39,7 +40,7 @@ export async function GET(
     }
 
     const shares = await prisma.documentShare.findMany({
-      where: { documentId: params.id },
+      where: { documentId: id },
       include: {
         user: {
           select: {

@@ -6,10 +6,11 @@ import { authOptions } from "@/lib/auth";
 // POST /api/documents/[id]/share - Share a document with another user
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
+    const { id } = await params;
 
     if (!session?.user?.email) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -24,7 +25,7 @@ export async function POST(
     }
 
     const document = await prisma.document.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!document) {
@@ -83,10 +84,11 @@ export async function POST(
 // DELETE /api/documents/[id]/share - Remove document sharing
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
+    const { id } = await params;
 
     if (!session?.user?.email) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -101,7 +103,7 @@ export async function DELETE(
     }
 
     const document = await prisma.document.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!document) {
@@ -157,10 +159,11 @@ export async function DELETE(
 // PUT /api/documents/[id]/share - Update share permissions
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
+    const { id } = await params;
 
     if (!session?.user?.email) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -175,7 +178,7 @@ export async function PUT(
     }
 
     const document = await prisma.document.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!document) {

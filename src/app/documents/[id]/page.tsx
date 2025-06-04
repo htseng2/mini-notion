@@ -7,9 +7,9 @@ import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import DocumentEditor from "@/components/DocumentEditor";
 
 interface DocumentPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default async function DocumentPage({ params }: DocumentPageProps) {

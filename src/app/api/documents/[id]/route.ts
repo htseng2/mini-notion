@@ -6,7 +6,7 @@ import { authOptions } from "@/lib/auth";
 // GET /api/documents/[id] - Get a single document
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -52,7 +52,7 @@ export async function GET(
 // PUT /api/documents/[id] - Update a document
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -126,10 +126,11 @@ export async function PUT(
 // DELETE /api/documents/[id] - Delete a document
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
+    const { id } = await params;
 
     if (!session?.user?.email) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -144,7 +145,7 @@ export async function DELETE(
     }
 
     const document = await prisma.document.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!document) {
@@ -159,7 +160,7 @@ export async function DELETE(
     }
 
     await prisma.document.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json(
