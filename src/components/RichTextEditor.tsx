@@ -144,7 +144,7 @@ export default function RichTextEditor({
       )}
       <EditorContent
         editor={editor}
-        className="prose prose-neutral dark:prose-invert max-w-none min-h-[500px] rounded-lg border border-input bg-background px-4 py-3 text-foreground shadow-sm focus-within:ring-2 focus-within:ring-ring focus-within:border-ring"
+        className="prose prose-neutral dark:prose-invert max-w-none min-h-[500px] rounded-lg border border-input bg-background px-4 py-3 text-foreground shadow-sm focus-within:ring-2 focus-within:ring-ring focus-within:border-ring [&_.prose]:max-w-none"
       />
     </div>
   );
