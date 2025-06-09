@@ -17,7 +17,7 @@ function MainLayoutInner({ children }: { children: React.ReactNode }) {
     <>
       <SideNav userName={session.user.name} userEmail={session.user.email} />
       <main
-        className={`min-h-screen bg-gradient-to-br from-blue-50 via-background to-purple-50 dark:from-slate-900 dark:via-background dark:to-slate-800 transition-all duration-300 ${
+        className={`min-h-screen bg-background from-blue-50 via-background to-purple-50 dark:from-slate-900 dark:via-background dark:to-slate-800 transition-all duration-300 ${
           isExpanded ? "ml-64" : "ml-16"
         }`}
       >

@@ -1,7 +1,8 @@
-import { Fragment, useRef, useEffect } from "react";
+import { Fragment, useRef, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { useTheme } from "next-themes";
 
 interface Document {
   id: string;
@@ -26,6 +27,13 @@ export default function SearchModal({
   onSearchQueryChange,
 }: SearchModalProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [mounted, setMounted] = useState(false);
+  const { theme } = useTheme();
+
+  // After mounting, we have access to the theme
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -37,20 +45,18 @@ export default function SearchModal({
     }
   }, [isOpen]);
 
+  // Set the background color class based on the theme, only after the component has mounted.
+  const panelBgClass =
+    mounted && theme === "dark" ? "bg-slate-900" : "bg-white";
+
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={onClose}>
-        <Transition.Child
-          as={Fragment}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" />
-        </Transition.Child>
+        {/* The backdrop, rendered as a fixed sibling to the panel container */}
+        <div
+          className="fixed inset-0 bg-black/30 backdrop-blur-sm"
+          aria-hidden="true"
+        />
 
         <div className="fixed inset-0 overflow-y-auto">
           <div className="flex min-h-full items-center justify-center p-4 text-center">
@@ -63,7 +69,9 @@ export default function SearchModal({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-background/95 backdrop-blur-sm p-6 text-left align-middle shadow-xl transition-all border border-border">
+              <Dialog.Panel
+                className={`w-full max-w-md transform overflow-hidden rounded-2xl p-6 text-left align-middle shadow-xl transition-all border border-border ${panelBgClass}`}
+              >
                 <div className="flex items-center justify-between mb-4">
                   <Dialog.Title
                     as="h3"
